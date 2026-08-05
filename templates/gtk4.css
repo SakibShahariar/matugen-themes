@@ -3,7 +3,6 @@
 /***************************
  * Keyframes & Interpolators
  **************************/
-
 @keyframes expressive-pop-in {
   0%   { opacity: 0; transform: scale(0.92) translateY(4px); }
   60%  { opacity: 1; transform: scale(1.03) translateY(-1px); }
@@ -30,7 +29,8 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(1turn); }
+  from { -gtk-icon-transform: rotate(0deg); }
+  to   { -gtk-icon-transform: rotate(360deg); }
 }
 
 @keyframes pill-pop {
@@ -64,11 +64,11 @@
 }
 
 @keyframes check-pop {
-  0%   { transform: scale(0.6);  }
-  55%  { transform: scale(1.25); }
-  75%  { transform: scale(0.9);  }
-  90%  { transform: scale(1.05); }
-  100% { transform: scale(1);    }
+  0%   { -gtk-icon-transform: scale(0.6);  }
+  55%  { -gtk-icon-transform: scale(1.25); }
+  75%  { -gtk-icon-transform: scale(0.9);  }
+  90%  { -gtk-icon-transform: scale(1.05); }
+  100% { -gtk-icon-transform: scale(1);    }
 }
 
 @keyframes needs-attention {
@@ -76,10 +76,24 @@
   100% { background-color: transparent;    opacity: 0; }
 }
 
+@keyframes install-progress-unknown-move {
+  0%   { background-position: 0%; }
+  50%  { background-position: 100%; }
+  100% { background-position: 0%; }
+}
+
+@keyframes pre-delay {
+  from { opacity: 0; }
+  to   { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+}
+
 /***************
  * Base States *
  ***************/
-
 .background {
   background-color: var(--background);
   color: var(--primary);
@@ -121,7 +135,6 @@ iconview:disabled,
 
 iconview:selected,
 .view:selected {
-  color: var(--on_primary);
   background-color: var(--primary);
   transition: background-color 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1),
               color            0.3s cubic-bezier(0.2, 0, 0, 1);
@@ -170,7 +183,6 @@ flowbox > rubberband {
 /******************************************
  * Container Flow: Grid, Lists, Flowboxes *
  ******************************************/
-
 flowbox > flowboxchild {
   padding: 6px;
   border-radius: 16px;
@@ -265,18 +277,29 @@ coverflow cover {
 /******************
  * Labels & Text  *
  ******************/
+label.separator { 
+  color: color-mix(in srgb, var(--outline) 50%, transparent);
+}
 
-label.separator { color: color-mix(in srgb, var(--outline) 50%, transparent); }
-label:disabled  { opacity: 1; color: color-mix(in srgb, var(--on_surface_variant) 38%, transparent); }
+label:disabled { 
+  opacity: 1; color: color-mix(in srgb, var(--on_surface_variant) 38%, transparent);
+}
+
 headerbar label:disabled,
 tab label:disabled,
-button label:disabled { color: inherit; opacity: 1; }
+button label:disabled { 
+  color: inherit; opacity: 1;
+}
 
 label.osd {
   border-radius: 16px;
   background-color: var(--inverse_surface);
   color: var(--inverse_on_surface);
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+label.panel-title {
+  color: var(--primary);
 }
 
 .dim-label,
@@ -293,7 +316,6 @@ row label.subtitle {
 .warning { color: var(--warning);   transition: color 0.3s cubic-bezier(0.2, 0, 0, 1); }
 .error   { color: var(--error);     transition: color 0.3s cubic-bezier(0.2, 0, 0, 1); }
 
-/* Typography Scale Hierarchy */
 .large-title     { font-weight: 300; font-size: 26pt; letter-spacing: -0.5px; }
 .title-1         { font-weight: 800; font-size: 22pt; letter-spacing: -0.2px; }
 .title-2         { font-weight: 800; font-size: 17pt; }
@@ -324,7 +346,6 @@ window.assistant .sidebar label.highlight {
 /************************
  * Overlays & OSD Popups*
  ************************/
-
 .osd .scale-popup > arrow,
 .osd .scale-popup > contents,
 .osd popover > arrow,
@@ -334,25 +355,19 @@ popover.touch-selection > contents,
 popover.magnifier > arrow,
 popover.magnifier > contents,
 .osd {
-  color: var(--inverse_on_surface);
-  background-color: var(--inverse_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
+  background-color: var(--surface_container);
   background-clip: padding-box;
   border-radius: 20px;
   border: none;
   animation: expressive-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-.osd {
-  padding: 8px;
-  margin: 8px;
-}
-
 .osd,
 .osd.background {
-  background-color: var(--inverse_surface);
-  color: var(--inverse_on_surface);
+  background-color: var(--surface_container);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 20px;
-  padding: 16px;
   border: none;
 }
 
@@ -380,7 +395,6 @@ spinner:checked:disabled {
 /******************************************
  * Text Entries *
  ******************************************/
-
 entry headerbar popover.background entry,
 headerbar popover.background entry entry,
 entry {
@@ -390,7 +404,7 @@ entry {
   border-radius: 20px;
   caret-color: var(--primary);
   background-color: var(--surface_container_highest);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 2px solid transparent;
   outline-offset: -2px;
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
@@ -447,15 +461,16 @@ entry > image:disabled {
 /************************
  * Entry Status Alerts  *
  ************************/
-
 entry.error {
   background-color: var(--error_container);
   color: var(--on_error_container);
 }
+
 entry.error:focus-within {
   outline: 2px solid var(--error);
   color: var(--error);
 }
+
 entry.error > text > selection {
   background-color: var(--error);
   color: var(--on_error);
@@ -465,6 +480,7 @@ entry.warning {
   background-color: color-mix(in srgb, #f59e0b 12%, transparent);
   color: #d97706;
 }
+
 entry.warning:focus-within {
   outline: 2px solid #d97706;
   color: #d97706;
@@ -474,6 +490,7 @@ entry.success {
   background-color: var(--primary_container);
   color: var(--on_primary_container);
 }
+
 entry.success:focus-within {
   outline: 2px solid var(--primary);
   color: var(--primary);
@@ -482,7 +499,6 @@ entry.success:focus-within {
 /******************************************
  * Progress Indicators & Selection Tags   *
  ******************************************/
-
 entry > progress {
   margin: 0 -4px;
   border-bottom: 3px solid var(--primary);
@@ -494,7 +510,7 @@ entry > progress {
   margin: 3px;
   border-radius: 12px;
   background-color: color-mix(in srgb, var(--surface_variant) 24%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
               border-radius    0.3s cubic-bezier(0.2, 0, 0, 1),
               transform        0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -583,8 +599,6 @@ arrow:active {
  ***********/
 button {
   border-radius: 12px;
-  background-color: var(--surface_container_highest);
-  color: var(--primary);
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
               border-radius    0.3s cubic-bezier(0.2, 0, 0, 1),
               color            0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -618,6 +632,12 @@ button:checked {
               color            0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
+button:checked label,
+button:checked image,
+button:checked .icon {
+  color: var(--on_primary);
+}
+
 button:checked:hover {
   border-radius: 999px;
   background-color: color-mix(in srgb, var(--primary) 90%, var(--on_primary) 10%);
@@ -644,7 +664,6 @@ button:checked:disabled {
   color: color-mix(in srgb, var(--on_primary) 38%, transparent);
 }
 
-/* ── non-destructive variant ── */
 headerbar popover.background button:not(.suggested-action):not(.destructive-action):not(.flat),
 button:not(.destructive-action) {
   border-radius: 12px;
@@ -671,7 +690,6 @@ headerbar popover.background button.keyboard-activating:not(.suggested-action):n
 button.keyboard-activating:not(.destructive-action),
 headerbar popover.background button:active:not(.suggested-action):not(.destructive-action):not(.flat),
 button:active:not(.destructive-action) {
-  border-radius: 999px;
   background-color: var(--primary);
   color: var(--on_primary);
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1),
@@ -681,17 +699,8 @@ button:active:not(.destructive-action) {
   outline: 0 solid transparent;
 }
 
-/* causing some problem in "Extensions" about page
-headerbar popover.background button:focus:not(.suggested-action):not(.destructive-action):not(.flat),
-button:focus:not(.destructive-action) {
-  outline: 2px solid var(--primary);
-  outline-offset: 0;
-}
-*/
-
 headerbar popover.background button:checked:not(.suggested-action):not(.destructive-action):not(.flat),
-button:checked:not(.image-button):not(.flat):not(row button) {
-  border-radius: 999px;
+button:checked:not(.image-button):not(.flat):not(.background-preview-button):not(.accent-button) {
   background-color: var(--primary);
   color: var(--on_primary);
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
@@ -700,9 +709,12 @@ button:checked:not(.image-button):not(.flat):not(row button) {
               color            0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
+row button:checked {
+  animation: none;
+}
+
 headerbar popover.background button:checked:hover:not(.suggested-action):not(.destructive-action):not(.flat),
-button:checked:hover {
-  border-radius: 999px;
+button:checked:hover:not(.image-button):not(.flat):not(.background-preview-button):not(.accent-button) {
   background-color: color-mix(in srgb, var(--primary) 90%, var(--on_primary) 10%);
   color: var(--on_primary);
   outline-color: transparent;
@@ -754,7 +766,7 @@ headerbar.selection-mode button:focus:not(.suggested-action):not(.destructive-ac
 headerbar.selection-mode button:hover:not(.suggested-action):not(.destructive-action),
 headerbar.selection-mode button:active:not(.suggested-action):not(.destructive-action),
 headerbar.selection-mode button:checked:not(.suggested-action):not(.destructive-action) {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.warning > revealer > box button:disabled,
@@ -777,7 +789,7 @@ placessidebar list.navigation-sidebar > row,
 placessidebar > viewport > list > row {
   border-radius: 999px;
   background-color: transparent;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
               border-radius    0.3s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -801,12 +813,11 @@ placessidebar > viewport > list > row:selected {
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
-/* Static color per state — no transitions on children */
 placessidebar list.navigation-sidebar > row label,
 placessidebar list.navigation-sidebar > row image,
 placessidebar > viewport > list > row label,
 placessidebar > viewport > list > row image {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 70%, transparent);
 }
 
 placessidebar list.navigation-sidebar > row:active label,
@@ -838,7 +849,7 @@ tabbar tab:not(:selected) button.image-button.tab-close-button,
 dnd tab:not(:selected) button.image-button.tab-close-button,
 notebook > header > tabs > tab:not(:checked):not(:selected) button.small-button,
 notebook > header menubutton > button.flat {
-  color: color-mix(in srgb, var(--on_surface) 60%, transparent);
+  color: color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
 tabbar tab:not(:selected) button.image-button.tab-close-button:hover,
@@ -969,7 +980,6 @@ button.flat {
               border-radius    0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
               color            0.2s cubic-bezier(0.2, 0, 0, 1),
               outline-color    0.3s cubic-bezier(0.2, 0, 0, 1);
-  background-image: radial-gradient(circle, transparent 10%, transparent 0%);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 1000% 1000%;
@@ -979,14 +989,21 @@ button.flat {
   color: var(--primary);
 }
 
-button.destructive-action {
-  color: var(--error) !important;
-  background-color: transparent;
-}
-
-button.destructive-action:hover {
-  color: var(--error);
-  background-color: color-mix(in srgb, var(--error) 8%, transparent);
+#NautilusPathButton,
+filechooser #pathbarbox > stack > box > button,
+window.messagedialog .response-area button:not(.destructive-action),
+window.dialog.message .dialog-action-area > button:not(.destructive-action),
+.app-notification button,
+headerbar button:not(.suggested-action):not(.destructive-action),
+.toolbar button:not(.destructive-action),
+splitbutton.suggested-action > button,
+splitbutton.suggested-action > menubutton > button,
+splitbutton.opaque > button,
+splitbutton.opaque > menubutton > button,
+menubutton.suggested-action > button,
+menubutton.opaque > button,
+menubutton.flat > button {
+  color: var(--primary);
 }
 
 button.destructive-action:active {
@@ -1004,8 +1021,13 @@ button.destructive-action:disabled {
 button.destructive-action:focus {
   outline: 2px solid var(--error);
   outline-offset: 2px;
-  color: var(--error);
-  background-color: transparent;
+  color: var(--on_error);
+  background-color: var(--error);
+}
+
+button.destructive-action:hover {
+  background-color: color-mix(in srgb, var(--error), var(--on_error) 12%);
+  color: var(--on_error);
 }
 
 button .badge.needs-attention.numeric {
@@ -1023,7 +1045,7 @@ button .badge.needs-attention.numeric {
 .destructive-action.flat label,
 splitbutton.destructive-action > button,
 menubutton.destructive-action > button {
-  color: var(--error) !important;
+  color: var(--error);
   background-color: transparent;
 }
 
@@ -1031,16 +1053,16 @@ menubutton.destructive-action > button {
 .destructive-action.flat:hover label,
 splitbutton.destructive-action > button:hover,
 menubutton.destructive-action > button:hover {
-  color: var(--error) !important;
-  background-color: color-mix(in srgb, var(--error) 8%, transparent) !important;
+  color: var(--error);
+  background-color: color-mix(in srgb, var(--error) 8%, transparent);
 }
 
 .destructive-action.flat:active,
 .destructive-action.flat:active label,
 splitbutton.destructive-action > button:active,
 menubutton.destructive-action > button:active {
-  color: var(--error) !important;
-  background-color: color-mix(in srgb, var(--error) 12%, transparent) !important;
+  color: var(--error);
+  background-color: color-mix(in srgb, var(--error) 12%, transparent);
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
@@ -1048,9 +1070,9 @@ menubutton.destructive-action > button:active {
 .destructive-action.flat:focus label,
 splitbutton.destructive-action > button:focus,
 menubutton.destructive-action > button:focus {
-  color: var(--error) !important;
-  border-color: var(--error) !important;
-  outline-color: var(--error) !important;
+  color: var(--error);
+  border-color: var(--error);
+  outline-color: var(--error);
   background-color: transparent;
 }
 
@@ -1068,9 +1090,7 @@ menubutton.suggested-action > button:focus:not(:hover):not(:active),
 menubutton.opaque > button:focus:not(:hover):not(:active),
 menubutton.flat > button:focus:not(:hover):not(:active),
 button.flat:focus:not(:hover):not(:active) {
-  outline: 2px solid var(--primary);
   color: var(--primary);
-  outline-offset: -2px;
 }
 
 #NautilusPathButton:hover,
@@ -1178,7 +1198,7 @@ menubutton.destructive-action > button:checked:hover,
 menubutton.opaque > button:checked:hover,
 menubutton.flat > button:checked:hover,
 button.flat:checked:hover {
-  background-color: color-mix(in srgb, var(--primary) 20%, transparent);
+  background-color: var(--primary);
 }
 
 #NautilusPathButton:checked:disabled,
@@ -1251,14 +1271,13 @@ spinbutton > button {
 button {
   min-height: 24px;
   min-width: 16px;
-  padding: 5px 9px;
   border-radius: 9px;
   font-weight: 500;
 }
 
 button:drop(active) {
   background-color: color-mix(in srgb, var(--primary) 8%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 0 solid transparent;
 }
 
@@ -1267,8 +1286,7 @@ button separator {
 }
 
 button.opaque {
-  background-color: var(--surface_container);
-  color: var(--on_surface);
+  color: var(--primary);
 }
 
 button.text-button {
@@ -1282,8 +1300,9 @@ button.text-button:checked:hover {
   color: var(--on_primary);
 }
 
-button.text-button:checked label {
-  color: var(--primary);
+button.image-button:not(MyComputerToggleButton *) {
+  min-width: 24px;
+  padding: 5px;
 }
 
 button.image-button {
@@ -1338,6 +1357,12 @@ button.image-text-button image:not(:only-child) {
   margin: 0 4px;
 }
 
+button.image-text-button.pill:focus {
+  outline: none;
+  background: var(--primary);
+  color: var(--background);
+}
+
 button.arrow-button {
   padding-left: 9px;
   padding-right: 9px;
@@ -1381,7 +1406,7 @@ button.card:hover {
 button.card.keyboard-activating,
 button.card:active {
   background-color: color-mix(in srgb, var(--primary) 12%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 0 solid transparent;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
@@ -1730,7 +1755,7 @@ button.link > label {
 }
 
 button > image {
-  transition: filter 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: -gtk-icon-filter 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /*****************
@@ -1741,7 +1766,7 @@ spinbutton {
   padding: 0;
   border-spacing: 0;
   background-color: var(--surface_container_highest);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 0 solid transparent;
   outline-offset: 2px;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -1843,7 +1868,7 @@ spinbutton.vertical > button {
 }
 
 spinbutton > button > image {
-  transition: filter 0.2s cubic-bezier(0.2, 0, 0, 1);
+  transition: -gtk-icon-filter 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 /**************
@@ -1991,7 +2016,7 @@ button.combo:only-child {
   border-radius: 12px;
   font-weight: normal;
   background-color: var(--surface_container_highest);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 0 solid transparent;
   outline-offset: 2px;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -2206,6 +2231,12 @@ headerbar button:not(.suggested-action):not(.destructive-action) {
               color            0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
+headerbar button:not(.suggested-action):not(.destructive-action) {
+  transition: border-radius    0.3s cubic-bezier(0.2, 0, 0, 1),
+              background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+              color            0.15s cubic-bezier(0.2, 0, 0, 1);
+}
+
 headerbar .linked > button:not(.suggested-action):not(.destructive-action) {
   border-radius: 0;
 }
@@ -2227,6 +2258,8 @@ headerbar .linked > button:only-child:not(.suggested-action):not(.destructive-ac
 headerbar button:hover:not(.suggested-action):not(.destructive-action) {
   background-color: color-mix(in srgb, var(--primary) 8%, transparent);
   border-radius: 16px;
+  transition: border-radius    0.2s cubic-bezier(0.2, 0, 0, 1),
+              background-color 0.15s cubic-bezier(0.2, 0, 0, 1);
 }
 
 headerbar button:active:not(.suggested-action):not(.destructive-action) {
@@ -2247,14 +2280,26 @@ headerbar button:disabled:not(.suggested-action):not(.destructive-action) {
 }
 
 headerbar button:checked:not(.suggested-action):not(.destructive-action) {
-  background-color: var(--primary);
-  color: var(--on_primary);
+  background-color: color-mix(in srgb, var(--primary) 15%, transparent);
+  color: var(--primary);
   border-radius: 999px;
   outline: none;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
               border-radius    0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
               color            0.15s cubic-bezier(0.2, 0, 0, 1);
+}
+
+headerbar button:checked:not(.suggested-action):not(.destructive-action) image,
+headerbar button:checked:not(.suggested-action):not(.destructive-action) .icon {
+  color: var(--primary);
+}
+
+headerbar button:checked:active:not(.suggested-action):not(.destructive-action) {
+  animation: none;
+  transform: scale(0.97);
+  transition: transform         0.1s cubic-bezier(0.2, 0, 0, 1),
+              background-color  0.1s cubic-bezier(0.2, 0, 0, 1);
 }
 
 headerbar viewswitcher button:checked:not(.suggested-action):not(.destructive-action) {
@@ -2296,7 +2341,11 @@ headerbar button:backdrop:disabled:not(.suggested-action):not(.destructive-actio
 }
 
 headerbar button:backdrop:checked:not(.suggested-action):not(.destructive-action) {
-  color: color-mix(in srgb, var(--on_surface) 60%, transparent);
+  color: color-mix(in srgb, var(--on_primary) 60%, transparent);
+}
+
+headerbar viewswitcher button:backdrop:checked:not(.suggested-action):not(.destructive-action) {
+  color: color-mix(in srgb, var(--primary) 60%, transparent);
 }
 
 headerbar button:backdrop:checked:disabled:not(.suggested-action):not(.destructive-action) {
@@ -2325,7 +2374,7 @@ headerbar button.destructive-action:disabled {
 
 headerbar entry {
   background-color: var(--surface_container_highest);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 12px;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
               border-radius    0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -2369,12 +2418,17 @@ headerbar {
   transition: background-color 75ms cubic-bezier(0, 0, 0.2, 1),
               color            75ms cubic-bezier(0, 0, 0.2, 1);
   background-color: transparent;
-  color: var(--on_surface);
-  min-height: 46px;
+  color: var(--primary);
   border: none;
   box-shadow: none;
-  padding: 0;
+  padding-top: 3px; 
+  padding-bottom: 0px;
   margin: 0;
+}
+
+headerbar button {
+  margin-top: 2px;
+  margin-bottom: 2px;  
 }
 
 headerbar:disabled {
@@ -2440,35 +2494,8 @@ headerbar headerbar + separator {
   background-color: var(--outline_variant);
 }
 
-headerbar > windowhandle > box {
-  padding: 0 12px;
-}
-
-headerbar > windowhandle > box,
-headerbar > windowhandle > box > box.start,
-headerbar > windowhandle > box > box.end {
-  border-spacing: 6px;
-}
-
-headerbar entry,
-headerbar spinbutton,
-headerbar splitbutton,
-headerbar button,
-headerbar menubutton,
-headerbar stackswitcher,
-headerbar separator:not(.sidebar) {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
-headerbar menubutton > button,
-headerbar spinbutton > button,
-headerbar splitbutton > button,
-headerbar splitbutton > menubutton,
-headerbar .linked > menubutton,
-headerbar entry > menubutton {
-  margin-top: 0;
-  margin-bottom: 0;
+headerbar windowhandle button {
+  color: var(--primary);
 }
 
 headerbar button.star {
@@ -2537,11 +2564,6 @@ headerbar popover.background stackswitcher {
 
 headerbar separator:not(.sidebar) {
   background-color: var(--outline_variant);
-}
-
-headerbar switch {
-  margin-top: auto;
-  margin-bottom: auto;
 }
 
 headerbar.selection-mode {
@@ -2650,7 +2672,6 @@ window.devel headerbar:backdrop {
 /************
  * Pathbars *
  ************/
-
 pathbar > button {
   padding-left: 5px;
   padding-right: 5px;
@@ -2986,12 +3007,7 @@ columnview.view cell {
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
-columnview.view cell:hover {
-  background-color: color-mix(in srgb, var(--primary) 4%, transparent);
-}
-
 columnview.view cell:active {
-  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
   animation: cell-flash 0.3s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
@@ -3002,7 +3018,7 @@ columnview.view cell:active {
 menubar {
   padding: 0;
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 menubar:backdrop {
@@ -3061,7 +3077,7 @@ menubar > item popover.menu.background popover.menu.background > contents {
  * Popover Base Menus *
  **********************/
 popover.menu box.inline-buttons {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   padding: 0 6px;
 }
 
@@ -3157,7 +3173,7 @@ popover > contents {
   padding: 6px;
   background-color: var(--surface_container);
   border-radius: 12px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border: 1px solid var(--outline_variant);
   background-clip: border-box;
   animation: expressive-pop-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -3248,7 +3264,7 @@ popover modelbutton {
   min-height: 22px;
   min-width: 56px;
   padding: 3px 9px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   font: initial;
   border-radius: 12px;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -3330,7 +3346,7 @@ notebook > header > tabs > tab {
   border: none;
   outline: none;
   background-clip: padding-box;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   font-weight: 500;
   border-radius: 9px;
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
@@ -3355,7 +3371,7 @@ notebook > header > tabs > tab:disabled {
 tabbar tab:active,
 notebook > header > tabs > tab:active {
   background-color: color-mix(in srgb, var(--primary) 12%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   box-shadow: none;
   border-radius: 999px;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
@@ -3366,7 +3382,7 @@ tabbar tab:checked:not(:active),
 notebook > header > tabs > tab:checked:not(:active),
 tabbar tab:selected:not(:active),
 notebook > header > tabs > tab:selected:not(:active) {
-  background-color: var(--surface_container_highest);
+  background-color: color-mix(in srgb, var(--primary) 14%, transparent);
   color: var(--primary);
   box-shadow: none;
   border-radius: 999px;
@@ -3494,7 +3510,7 @@ notebook > header > tabs > tab > box {
 
 notebook > header > tabs > tab > box:drop(active) {
   background-color: color-mix(in srgb, var(--primary) 8%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 notebook > header > tabs > tab button.flat:last-child {
@@ -3769,7 +3785,7 @@ tabbar:not(.inline) .end-action {
 dnd tab {
   min-height: 24px;
   background-color: var(--surface_container);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   outline: 1px solid var(--outline_variant);
   outline-offset: -1px;
   margin: 24px;
@@ -3791,9 +3807,8 @@ tabbar tab button.image-button,
 dnd tab button.image-button {
   padding: 0;
   margin: 0;
-  min-width: 24px;
-  min-height: 24px;
   border-radius: 9999px;
+  transition: none; 
 }
 
 tabbar tab button.image-button.tab-close-button,
@@ -3845,7 +3860,7 @@ scrollbar > range > trough > slider {
   background-clip: padding-box;
   box-shadow: none;
   outline: none;
-  background-color: var(--on_surface_variant);
+  background-color: var(--primary);
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
               min-width        0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
               min-height       0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -4606,7 +4621,7 @@ progressbar progress {
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
-progressbar .osd {
+progressbar.osd {
   min-width: 6px;
   min-height: 6px;
   background-color: transparent;
@@ -4615,11 +4630,11 @@ progressbar .osd {
   padding: 0;
 }
 
-progressbar .osd trough {
+progressbar.osd trough {
   background-color: transparent;
 }
 
-progressbar .osd progress {
+progressbar.osd progress {
   background-color: var(--primary);
 }
 
@@ -4683,7 +4698,7 @@ levelbar block.empty {
  * Print dialog *
  ****************/
 window.dialog.print drawing {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background: none;
   border: none;
   padding: 0;
@@ -4693,7 +4708,7 @@ window.dialog.print drawing paper {
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--outline) 12%, transparent);
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 window.dialog.print .dialog-action-box {
@@ -4747,7 +4762,7 @@ actionbar > revealer > box {
   background-color: var(--background);
   background-clip: border-box;
   border: none;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 actionbar > revealer > box button,
@@ -4895,7 +4910,7 @@ list.boxed-list > row {
 }
 
 list.boxed-list > row:hover > box {
-  color: var(--primary) !important;
+  color: var(--primary);
 }
 
 list.content > row:hover,
@@ -4932,7 +4947,7 @@ list.boxed-list > row:only-child {
 listview,
 list {
   border-color: color-mix(in srgb, var(--on_surface_variant) 12%, transparent);
-  background-color: var(--surface_container_low);
+  background-color: transparent;
   background-clip: padding-box;
 }
 
@@ -4976,10 +4991,9 @@ list.frame {
 }
 
 listview.view {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background-color: transparent;
 }
-
 
 popover.menu listview.view {
   padding: 0;
@@ -5021,7 +5035,7 @@ row > box.header {
 }
 
 row > box.header > .icon:disabled {
-  filter: opacity(0.35);
+  -gtk-icon-filter: opacity(0.35);
 }
 
 row > box.header > box.title {
@@ -5036,7 +5050,6 @@ treeview.view > header > button,
 row.activatable {
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
               border-radius 0.2s ease-out;
-  outline: none;
   box-shadow: none;
   background-color: transparent;
   border-radius: 12px;
@@ -5046,10 +5059,8 @@ row.activatable {
 columnview.view > header > button:focus,
 treeview.view > header > button:focus,
 row.activatable:focus {
-  color: var(--on_surface);
-  background-color: transparent;
+  color: var(--primary);
   box-shadow: none;
-  outline: none;
 }
 
 .nautilus-window .nautilus-grid-view child.activatable:hover,
@@ -5060,7 +5071,7 @@ columnview.view > header > button.has-open-popup,
 treeview.view > header > button.has-open-popup,
 row.activatable:hover,
 row.activatable.has-open-popup {
-  color: var(--secondary);
+  color: var(--primary);
   background-color: color-mix(in srgb, var(--primary) 10%, transparent);
   box-shadow: none;
   border-radius: 8px;
@@ -5068,8 +5079,7 @@ row.activatable.has-open-popup {
 
 .nautilus-window .nautilus-grid-view child.activatable:active,
 columnview.view > header > button:active,
-treeview.view > header > button:active,
-row.activatable:active {
+treeview.view > header > button:active {
   background-color: color-mix(in srgb, var(--primary) 15%, transparent);
   color: var(--primary);
   box-shadow: none;
@@ -5103,7 +5113,7 @@ button row.activatable:active {
 }
 
 button:checked row.activatable {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 row:selected {
@@ -5121,7 +5131,6 @@ row:selected:hover {
 
 row:selected:focus,
 row:selected:focus-visible:focus-within {
-  outline: none;
   background-color: color-mix(in srgb, var(--primary) 30%, transparent);
   border-radius: 8px;
 }
@@ -5134,7 +5143,7 @@ row:selected:focus-visible:focus-within:hover {
 
 row:selected image,
 row:selected label {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 row:selected button image,
@@ -5145,6 +5154,9 @@ row:selected button label {
 row:selected:disabled image,
 row:selected:disabled label {
   color: color-mix(in srgb, var(--on_surface_variant) 70%, transparent);
+}
+
+row.activatable:active {
 }
 
 .rich-list > row {
@@ -5168,7 +5180,7 @@ row > box.header {
 }
 
 row > box.header > .icon:disabled {
-  filter: opacity(0.45);
+  -gtk-icon-filter: opacity(0.45);
 }
 
 row > box.header > box.title {
@@ -5182,7 +5194,7 @@ row > box.header > box.title,
 row > box.header > box.title > .title {
   padding: 0;
   font-weight: bold;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 row > box.header > box.title > .subtitle {
@@ -5254,7 +5266,7 @@ row.entry.success text > cursor-handle > contents {
 }
 
 row.combo image.dropdown-arrow:disabled {
-  filter: opacity(0.45);
+  -gtk-icon-filter: opacity(0.45);
 }
 
 row.combo listview.inline {
@@ -5312,7 +5324,7 @@ row.expander image.expander-row-arrow:dir(rtl) {
 }
 
 row.expander image.expander-row-arrow:disabled {
-  filter: opacity(0.45);
+  -gtk-icon-filter: opacity(0.45);
 }
 
 row.expander:checked image.expander-row-arrow {
@@ -5419,12 +5431,12 @@ expander:dir(rtl) {
 }
 
 expander:hover {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   transform: scale(1.15);
 }
 
 expander:active {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   transform: scale(0.9);
   transition: transform 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
@@ -5451,7 +5463,7 @@ expander-widget > box > title:hover {
 expander-widget > box > title:active {
   background-color: color-mix(in srgb, var(--primary) 12%, transparent);
   border-radius: 999px;
-  animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
+  animation: pill-pop-row 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -5477,7 +5489,7 @@ calendar {
   padding: 0;
   border: 1px solid color-mix(in srgb, var(--outline) 12%, transparent);
   border-radius: 12px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 calendar:disabled {
@@ -5585,7 +5597,7 @@ window.dialog.message .titlebar {
   border-style: none;
   box-shadow: inset 0 1px color-mix(in srgb, var(--on_surface_variant) 10%, transparent);
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 window.dialog.message .titlebar:backdrop {
@@ -5626,7 +5638,7 @@ window.aboutdialog.background.csd scrolledwindow.frame > textview.view > text {
  ********************/
 window.messagedialog {
   background-color: var(--surface_container_high);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   padding: 6px;
 }
 
@@ -6010,7 +6022,7 @@ infobar.action:backdrop > revealer > box,
 infobar.question > revealer > box,
 infobar.question:backdrop > revealer > box {
   background-color: transparent;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 9px;
   border: none;
 }
@@ -6039,14 +6051,14 @@ infobar.question:backdrop > revealer > box button:focus,
 infobar.question:backdrop > revealer > box button:active,
 infobar.question:backdrop > revealer > box button:checked,
 infobar.question:backdrop > revealer > box button.text-button:not(:disabled) {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.action > revealer > box *:link,
 infobar.action:backdrop > revealer > box *:link,
 infobar.question > revealer > box *:link,
 infobar.question:backdrop > revealer > box *:link {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.action:hover > revealer > box,
@@ -6072,12 +6084,12 @@ infobar.warning:backdrop > revealer > box button:focus,
 infobar.warning:backdrop > revealer > box button:active,
 infobar.warning:backdrop > revealer > box button:checked,
 infobar.warning:backdrop > revealer > box button.text-button:not(:disabled) {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.warning > revealer > box *:link,
 infobar.warning:backdrop > revealer > box *:link {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.warning:hover > revealer > box {
@@ -6102,12 +6114,12 @@ infobar.error:backdrop > revealer > box button:focus,
 infobar.error:backdrop > revealer > box button:active,
 infobar.error:backdrop > revealer > box button:checked,
 infobar.error:backdrop > revealer > box button.text-button:not(:disabled) {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.error > revealer > box *:link,
 infobar.error:backdrop > revealer > box *:link {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 infobar.error:hover > revealer > box {
@@ -6183,7 +6195,7 @@ colorswatch:last-child:not(.bottom) overlay {
 }
 
 colorswatch.dark {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 colorswatch.light {
@@ -6202,7 +6214,7 @@ colorchooser colorswatch:active {
 
 colorswatch#add-color-button {
   border-radius: 12px 0 0 12px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 colorswatch#add-color-button:only-child {
@@ -6403,7 +6415,8 @@ columnview.view:selected,
 treeview.view:selected,
 calendar:selected,
 calendar > grid > label.day-number:selected {
-  background-color: color-mix(in srgb, var(--primary) 6%, transparent);
+  background-color: color-mix(in srgb, var(--primary) 79%, transparent);
+  color: var(--on_primary);
 }
 
 flowbox > flowboxchild:selected,
@@ -6516,7 +6529,7 @@ shortcut > .keycap {
   border-radius: 13px;
   box-shadow: inset 0 -2px color-mix(in srgb, var(--on_surface_variant) 12%, transparent);
   background-color: var(--surface_container_high);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   font-size: smaller;
 }
 
@@ -6713,7 +6726,7 @@ popover.entry-completion > contents {
 
 .nautilus-window .sidebar-pane {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .nautilus-window .sidebar-pane:backdrop {
@@ -6771,7 +6784,7 @@ popover.entry-completion > contents {
 
 .nautilus-window tabbox > tabboxchild > tab:hover {
   background-color: var(--surface_container_low);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 14px;
 }
 
@@ -6789,7 +6802,7 @@ popover.entry-completion > contents {
 
 .nautilus-window tabbox > tabboxchild > tab:checked,
 .nautilus-window tabbox > tabboxchild > tab:selected {
-  background-color: var(--surface_container_low);
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
   color: var(--primary);
   box-shadow: none;
   border-radius: 999px;
@@ -6803,16 +6816,16 @@ popover.entry-completion > contents {
 }
 
 .nautilus-window tabbox > tabboxchild > tab button.tab-close-button {
-  color: var(--on_surface);
+  color: var(--primary);
 }
 
 .nautilus-window tabbox > tabboxchild > tab button.tab-close-button:hover,
 .nautilus-window tabbox > tabboxchild > tab button.tab-close-button:active {
-  color: var(--on_surface);
+  color: var(--primary);
 }
 
 .nautilus-window tabbox > tabboxchild > tab button.tab-close-button:disabled {
-  color: var(--on_surface);
+  color: var(--primary);
 }
 
 .nautilus-window .floating-bar {
@@ -6827,21 +6840,19 @@ popover.entry-completion > contents {
 
 .nautilus-window .floating-bar button {
   margin: 4px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .nautilus-window banner > revealer > widget {
-  color: var(--on_primary);
-  background-color: color-mix(in srgb, var(--primary_container) 10%, transparent);
+  color: var(--primary);
+  background-color: var(--surface_container);
   border-radius: 9px;
   margin: 9px;
   transition: background-color 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .nautilus-window banner > revealer > widget:hover {
-  background-color: var(--background);
-  border-radius: 9px;
-  margin: 9px;
+  background-color: var(--surface_container_high);
 }
 
 .nautilus-window banner > revealer > widget button {
@@ -6858,9 +6869,13 @@ popover.entry-completion > contents {
 }
 
 .nautilus-window banner > revealer > widget button:active {
-  border-radius: 999px;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+banner > revealer > widget {
+  background-color: color-mix(in srgb, var(--primary_container) 10%, transparent);
+  color: var(--primary);
 }
 
 #NautilusQueryEditor > menubutton > button.image-button {
@@ -6893,7 +6908,6 @@ popover.entry-completion > contents {
 .nautilus-pathbar {
   background-color: var(--surface_container_low);
   border-radius: 12px;
-  margin: 6px 0;
 }
 
 #NautilusPathButton {
@@ -7052,7 +7066,7 @@ label.secondary-label {
 
 toast-overlay toast {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 12px;
   padding: 8px;
   animation: expressive-pop-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -7220,7 +7234,7 @@ datechooser {
 
 datechooser .current-week {
   background-color: var(--surface_container_low);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 12px;
 }
 
@@ -7386,7 +7400,7 @@ monthcell {
 
 monthcell:hover:not(.out-of-month):not(.today) {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 monthcell:selected {
@@ -7423,7 +7437,7 @@ monthcell.today:selected:hover {
 }
 
 monthcell label {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   font-size: 0.9rem;
 }
 
@@ -7631,7 +7645,7 @@ gs-summary-tile image.loading-icon {
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
 
-clamp {
+preferencespage > scrolledwindow > viewport > clamp {
   background-color: var(--background);
 }
 
@@ -7796,7 +7810,7 @@ flowboxchild.card:not(.category-tile) {
 .featured-tile {
   padding: 0;
   box-shadow: none;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .featured-tile label.title-1 {
@@ -7811,19 +7825,19 @@ flowboxchild.card:not(.category-tile) {
 .application-details-infobar,
 .application-details-infobar.info {
   background-color: var(--surface_container_low);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border: 1px solid color-mix(in srgb, var(--outline) 12%, transparent);
 }
 
 .application-details-infobar.warning {
   background-color: color-mix(in srgb, var(--background) 12%, transparent);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border: 1px solid color-mix(in srgb, var(--outline) 12%, transparent);
 }
 
 .card.info {
   background-color: var(--surface_container_low);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .card.warning {
@@ -7834,12 +7848,6 @@ flowboxchild.card:not(.category-tile) {
 .infobox {
   border-spacing: 6px;
   padding: 12px;
-}
-
-@keyframes install-progress-unknown-move {
-  0%   { background-position: 0%; }
-  50%  { background-position: 100%; }
-  100% { background-position: 0%; }
 }
 
 .application-details-description .button {
@@ -8122,7 +8130,7 @@ app-context-bar > box > button.flat {
 }
 
 .context-tile-lozenge.grey {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background-color: color-mix(in srgb, var(--surface_variant) 12%, transparent);
 }
 
@@ -8236,15 +8244,6 @@ row.app label.warning {
   color: var(--error);
 }
 
-@keyframes pre-delay {
-  from { opacity: 0; }
-  to   { opacity: 0; }
-}
-
-@keyframes fade-in {
-  from { filter: opacity(0%); }
-}
-
 spinner.fade-in:checked {
   animation: pre-delay 0.5s linear 1, fade-in 1s linear 1, spin 1s linear infinite;
   animation-delay: 0s, 0.5s, 0.5s;
@@ -8267,10 +8266,6 @@ window > contents > leaflet > box > stack.background {
   font-size: 32pt;
   font-weight: 900;
   margin-left: 9px;
-}
-
-#conditions-grid *:backdrop {
-  color: color-mix(in srgb, var(--on_surface_variant) 70%, transparent);
 }
 
 .content-view.cell {
@@ -8626,7 +8621,7 @@ notebook scrolledwindow treeview.treeview-spacing {
 }
 
 .account-switcher-row label {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .account-switcher-row label.dim-label {
@@ -8659,7 +8654,7 @@ avatar.color13 { background-image: linear-gradient(#be916d, #785336); color: #e5
 avatar.color14 { background-image: linear-gradient(#c0bfbc, #6e6d71); color: #d8d7d3; }
 
 avatar.contrasted {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 avatar.image {
@@ -8673,7 +8668,7 @@ avatar.image {
   box-shadow: none;
   outline: none;
   background-color: var(--surface_container_low);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .card.activatable {
@@ -8683,7 +8678,7 @@ avatar.image {
               outline-color    0.3s cubic-bezier(0.2, 0, 0, 1);
   outline: 0 solid transparent;
   outline-offset: 2px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background-color: var(--surface_container_low);
 }
 
@@ -8804,10 +8799,18 @@ viewswitcher button.toggle > stack > box.wide {
   border-spacing: 6px;
 }
 
-/* Target the text and indicator inside a checked viewswitcher button */
 viewswitcher > button:checked label,
 viewswitcher > button:checked indicatorbin {
-  color: var(--on_primary) !important;
+  color: var(--primary);
+}
+
+viewswitcher > button:checked:hover label,
+viewswitcher > button:checked:hover indicatorbin {
+  color: var(--on_primary);
+}
+
+viewswitcher > button:checked:hover {
+  background-color: var(--primary);
 }
 
 viewswitcherbar actionbar > revealer > box {
@@ -8826,13 +8829,11 @@ viewswitcherbar actionbar > revealer > box viewswitcher.narrow button.toggle:hov
 }
 
 viewswitcherbar actionbar > revealer > box viewswitcher.narrow button.toggle:active {
-  border-radius: 999px;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
 }
 
 viewswitcherbar actionbar > revealer > box viewswitcher.narrow button.toggle:checked {
-  border-radius: 999px;
   animation: pill-pop 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
 }
 
@@ -8882,15 +8883,15 @@ indicatorbin > mask {
 
 indicatorbin > indicator {
   margin: 1px;
-  background-color: color-mix(in srgb, currentColor 40%, transparent);
+  background-color: var(--primary_variant);
   transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
 }
 
 indicatorbin > indicator > label {
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   font-weight: bold;
   padding: 1px 4px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 indicatorbin > mask {
@@ -8905,16 +8906,12 @@ indicatorbin.needs-attention > indicator {
 }
 
 indicatorbin.needs-attention > indicator > label {
-  color: var(--on_surface);
+  color: var(--on_primary);
 }
 
 preferencespage > scrolledwindow > viewport > clamp > box {
   margin: 24px 12px;
   border-spacing: 24px;
-}
-
-preferencespage label {
-  color: var(--primary);
 }
 
 preferencesgroup > box background-preview widget.sidebar,
@@ -8988,6 +8985,7 @@ preferencesgroup > box button.accent-button {
 preferencesgroup > box button.accent-button:hover {
   outline: 3px solid color-mix(in srgb, currentColor 8%, transparent);
   outline-offset: -3px;
+  background: var(--accent-bg-color);
   transform: scale(1.1);
 }
 
@@ -9026,39 +9024,44 @@ preferencesgroup > box button.accent-button.slate  { --accent-bg-color: var(--ac
 
 preferencesgroup > box box > list.boxed-list-separate {
   background-color: transparent;
-  border-radius: 12px;
-  border: 1px solid rgba(251, 241, 199, 0.12);
+  margin-left: 12px;
+  margin-right: 12px;
+  border: none;
 }
 
 preferencesgroup > box box > list.boxed-list-separate row {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background-color: var(--surface_container_low);
-  border-radius: 12px 12px 0 0;
-  margin-top: 0;
-  margin-bottom: 2px;
-  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1);
+  border-radius: 3px;
+  margin: 0;
+  transition: background-color 0.2s cubic-bezier(0.2, 0, 0, 1),
+              border-radius    0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+preferencesgroup > box box > list.boxed-list-separate row:not(:first-child) {
+  margin-top: 12px;
 }
 
 preferencesgroup > box box > list.boxed-list-separate row:first-child {
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 1px rgba(251, 241, 199, 0.12);
+  border-radius: 12px 12px 3px 3px;
 }
 
 preferencesgroup > box box > list.boxed-list-separate row:last-child {
-  border-radius: 0 0 12px 12px;
-  margin-bottom: 0;
+  border-radius: 3px 3px 12px 12px;
 }
 
-preferencesgroup > box box > list.boxed-list-separate row + row {
-  margin-top: 2px;
+preferencesgroup > box box > list.boxed-list-separate row:only-child {
+  border-radius: 12px;
 }
 
-preferencesgroup > box box > list.boxed-list-separate row:hover,
-preferencesgroup > box box > list.boxed-list-separate row:focus {
-  color: color-mix(in srgb, var(--on_surface_variant) 70%, transparent);
-  background-color: var(--surface_container_low);
+preferencesgroup > box box > list.boxed-list-separate row:hover {
+  background-color: color-mix(in srgb, var(--primary) 5%, transparent);
 }
 
+preferencesgroup > box box > list.boxed-list-separate row:active {
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+  transition: background-color 0.1s cubic-bezier(0, 0, 0.2, 1);
+}
 window.about .main-page > viewport > clamp > box {
   margin: 12px;
   border-spacing: 6px;
@@ -9231,6 +9234,10 @@ overlay-split-view > shadow.down {
       transparent 24px);
 }
 
+navigation-view-page > navigation-view {
+  color: var(--primary);
+}
+
 .sidebar-pane .sidebar > scrolledwindow,
 .sidebar-pane toolbarview > scrolledwindow,
 .sidebar-pane navigation-view-page stack > scrolledwindow,
@@ -9245,7 +9252,7 @@ leaflet.unfolded > box > scrolledwindow,
 leaflet.unfolded .contacts-contact-list > scrolledwindow,
 .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 0;
   margin: 0;
 }
@@ -9254,7 +9261,6 @@ leaflet.unfolded .contacts-contact-list > scrolledwindow,
 .sidebar-pane toolbarview > scrolledwindow .dim-label,
 .sidebar-pane navigation-view-page stack > scrolledwindow .dim-label,
 .sidebar-pane .dim-label,
-.toolbar .dim-label,
 filechooser paned > box .dim-label,
 placessidebar > scrolledwindow .dim-label,
 agenda-view list.background .dim-label,
@@ -9296,9 +9302,13 @@ row.expander leaflet.unfolded .contacts-contact-list > scrolledwindow image.expa
   color: color-mix(in srgb, var(--on_primary_container) 38%, transparent);
 }
 
+.toolbar .dim-label {
+  color: var(--on_surface_variant);
+}
+
 .nautilus-window placessidebar > scrolledwindow {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-radius: 0;
   margin: 0 6px 0 0;
 }
@@ -9417,7 +9427,7 @@ placessidebar list.navigation-sidebar > row,
 leaflet.unfolded .contacts-contact-list > scrolledwindow > viewport > .navigation-sidebar > row,
 .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow > .navigation-sidebar > row {
   border-radius: 9px;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   padding: 6px 0;
 }
 
@@ -9433,7 +9443,7 @@ leaflet.unfolded .contacts-contact-list > scrolledwindow > viewport > .navigatio
 .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow > .navigation-sidebar > row:hover,
 .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow > .navigation-sidebar > row:active,
 .sidebar-pane toolbarview > stack > box > widget > widget > scrolledwindow > .navigation-sidebar > row:focus {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 placessidebar list.navigation-sidebar > row:selected,
@@ -9637,7 +9647,7 @@ leaflet.unfolded .contacts-contact-list > scrolledwindow > scrollbar.overlay-ind
 }
 
 .sidebar-pane {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-top-left-radius: 12px;
 }
 
@@ -9671,7 +9681,7 @@ leaflet.unfolded .contacts-contact-list > scrolledwindow > scrollbar.overlay-ind
 .content-pane .sidebar-pane,
 .sidebar-pane .content-pane {
   background-color: transparent;
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
 }
 
 .content-pane .sidebar-pane:backdrop,
@@ -9682,7 +9692,7 @@ leaflet.unfolded .contacts-contact-list > scrolledwindow > scrollbar.overlay-ind
 
 .content-pane {
   background-color: var(--background);
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   border-top-right-radius: 12px;
   box-shadow: inset 0 1px color-mix(in srgb, var(--on_surface_variant) 10%, transparent);
 }
@@ -9885,7 +9895,7 @@ themeswitcher checkbutton.light {
 }
 
 themeswitcher checkbutton.dark {
-  color: var(--on_surface);
+  color: color-mix(in srgb, var(--on_surface_variant) 90%, transparent);
   background-color: var(--background);
 }
 
@@ -9897,31 +9907,67 @@ windowtitle > label.title {
   color: var(--primary);
 }
 
-navigation-view-page > navigation-view {
-  color: var(--primary);
-}
-
-label.panel-title {
-  color: var(--primary);
-}
-
-button.image-text-button.pill:focus {
-  outline: none;
-  background: var(--primary);
-  color: var(--background);
-}
-
-banner > revealer > widget {
-  background-color: color-mix(in srgb, var(--primary_container) 10%, transparent);
-  color: var(--primary);
-}
-
-headerbar windowhandle button {
-  color: var(--on_primary) !important;
-}
-
 window.chromium headerbar,
 window.chromium headerbar.titlebar {
   background-color: var(--surface);
   background-image: none;
+}
+
+toggle-group toggle:checked {
+  background-color: color-mix(in srgb, var(--primary) 70%, transparent);
+  color: var(--on_primary);
+}
+
+toggle-group toggle:checked label {
+  color: var(--on_primary);
+}
+
+inline-view-switcher toggle-group toggle:checked {
+  background-color: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+inline-view-switcher toggle-group toggle label,
+inline-view-switcher toggle-group toggle image {
+  color: var(--primary);
+}
+
+box.numeric entry,
+box.numeric label {
+  color: var(--primary);
+}
+
+box.numeric entry {
+  background-color: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+dialog > widget > floating-sheet > sheet navigation-view-page > toolbarview {
+  background-color: var(--surface_container);
+  border-radius: 12px;
+}
+
+sidebar list.navigation-sidebar > row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+sidebar list.navigation-sidebar > row > box.horizontal {
+  border-spacing: 12px;
+  padding: 4px 8px;
+}
+
+dialog button.suggested-action {
+  min-height: 40px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+}
+
+/**********
+ * Clapper *
+ **********/
+clapper-app-window,
+.clapper-window,
+window > stack > box {
+  background-color: var(--surface);
+  box-shadow: none;
+  border: none;
 }
